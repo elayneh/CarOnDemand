@@ -1,4 +1,3 @@
-// src/sagas/userSaga.ts
 import { call, put, takeEvery } from "redux-saga/effects";
 import {
   registerUserRequest,
@@ -8,13 +7,12 @@ import {
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 import { FetchResult } from "apollo-boost";
 
-interface RegisterUserResponse {
-  registerUser: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-  };
+interface registerUser {
+  registerUser: any;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
 }
 
 const client = new ApolloClient({
@@ -41,13 +39,10 @@ function* registerUser(action: ReturnType<typeof registerUserRequest>) {
       }
     `;
 
-    const result: FetchResult<RegisterUserResponse> = yield call(
-      client.mutate,
-      {
-        mutation: REGISTER_USER,
-        variables: { firstName, lastName, email, password },
-      }
-    );
+    const result: FetchResult<registerUser> = yield call(client.mutate, {
+      mutation: REGISTER_USER,
+      variables: { firstName, lastName, email, password },
+    });
     yield put(registerUserSuccess(result.data!.registerUser));
   } catch (err: any) {
     yield put(registerUserFailure(err.message));

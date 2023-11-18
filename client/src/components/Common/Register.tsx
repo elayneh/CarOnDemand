@@ -236,7 +236,7 @@ export default function SignUp() {
 }
 ///////////////////////////////
 
-import { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -247,19 +247,139 @@ import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
+import Typography, { TypographyOwnProps } from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 //
 import { useDispatch } from "react-redux";
-import {
-  registerUserRequest,
-  registerUserSuccess,
-} from "../../redux/auth/slice";
-import React from "react";
+import { registerUserRequest } from "../../redux/auth/slice";
+import { CommonProps } from "@mui/material/OverridableComponent";
+import { JSX } from "react/jsx-runtime";
 //
 
-function Copyright(props) {
+function Copyright(
+  props: JSX.IntrinsicAttributes & {
+    component: React.ElementType<any>;
+  } & TypographyOwnProps &
+    CommonProps &
+    Omit<
+      any,
+      | "className"
+      | "style"
+      | "classes"
+      | "border"
+      | "borderTop"
+      | "borderRight"
+      | "borderBottom"
+      | "borderLeft"
+      | "borderColor"
+      | "borderRadius"
+      | "display"
+      | "displayPrint"
+      | "overflow"
+      | "textOverflow"
+      | "visibility"
+      | "whiteSpace"
+      | "flexBasis"
+      | "flexDirection"
+      | "flexWrap"
+      | "justifyContent"
+      | "alignItems"
+      | "alignContent"
+      | "order"
+      | "flex"
+      | "flexGrow"
+      | "flexShrink"
+      | "alignSelf"
+      | "justifyItems"
+      | "justifySelf"
+      | "gap"
+      | "columnGap"
+      | "rowGap"
+      | "gridColumn"
+      | "gridRow"
+      | "gridAutoFlow"
+      | "gridAutoColumns"
+      | "gridAutoRows"
+      | "gridTemplateColumns"
+      | "gridTemplateRows"
+      | "gridTemplateAreas"
+      | "gridArea"
+      | "bgcolor"
+      | "color"
+      | "zIndex"
+      | "position"
+      | "top"
+      | "right"
+      | "bottom"
+      | "left"
+      | "boxShadow"
+      | "width"
+      | "maxWidth"
+      | "minWidth"
+      | "height"
+      | "maxHeight"
+      | "minHeight"
+      | "boxSizing"
+      | "m"
+      | "mt"
+      | "mr"
+      | "mb"
+      | "ml"
+      | "mx"
+      | "my"
+      | "p"
+      | "pt"
+      | "pr"
+      | "pb"
+      | "pl"
+      | "px"
+      | "py"
+      | "margin"
+      | "marginTop"
+      | "marginRight"
+      | "marginBottom"
+      | "marginLeft"
+      | "marginX"
+      | "marginY"
+      | "marginInline"
+      | "marginInlineStart"
+      | "marginInlineEnd"
+      | "marginBlock"
+      | "marginBlockStart"
+      | "marginBlockEnd"
+      | "padding"
+      | "paddingTop"
+      | "paddingRight"
+      | "paddingBottom"
+      | "paddingLeft"
+      | "paddingX"
+      | "paddingY"
+      | "paddingInline"
+      | "paddingInlineStart"
+      | "paddingInlineEnd"
+      | "paddingBlock"
+      | "paddingBlockStart"
+      | "paddingBlockEnd"
+      | "typography"
+      | "fontFamily"
+      | "fontSize"
+      | "fontStyle"
+      | "fontWeight"
+      | "letterSpacing"
+      | "lineHeight"
+      | "textAlign"
+      | "textTransform"
+      | "align"
+      | "children"
+      | "gutterBottom"
+      | "noWrap"
+      | "paragraph"
+      | "sx"
+      | "variant"
+      | "variantMapping"
+    >
+) {
   return (
     <Typography
       variant="body2"
@@ -284,10 +404,10 @@ const theme = createTheme();
 
 export default function SignUp() {
   const dispatch = useDispatch();
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const handleFirstnameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setFirstName(event.target.value);
   };
@@ -420,7 +540,7 @@ export default function SignUp() {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
+        <Copyright sx={{ mt: 5 }} component={"symbol"} />
       </Container>
     </ThemeProvider>
   );

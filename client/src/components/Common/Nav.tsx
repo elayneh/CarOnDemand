@@ -8,10 +8,11 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
+import AdbIcon from "@mui/icons-material/DeveloperMode";
 
 const pages = ["Home", "Products", "Blog", "About US"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -130,9 +131,9 @@ export default function NavBar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title="User profile">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
               </IconButton>
             </Tooltip>
             <Menu
