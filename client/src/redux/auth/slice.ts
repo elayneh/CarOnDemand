@@ -24,13 +24,13 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    registerUserRequest: (state) => {
+    registerUserRequest: (state, action: PayloadAction<User>) => {
       state.loading = true;
+      state.user = action.payload;
       state.error = null;
     },
-    registerUserSuccess: (state, action: PayloadAction<User>) => {
+    registerUserSuccess: (state) => {
       state.loading = false;
-      state.user = action.payload;
     },
     registerUserFailure: (state, action: PayloadAction<string>) => {
       state.loading = false;

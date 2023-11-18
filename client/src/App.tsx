@@ -9,20 +9,17 @@ const Home: React.FC = () => {
   return (
     <div className="body-container">
       <div className="nav-bar">
-        <NavBar/>
+        {" "}
+        <NavBar />
       </div>
       <h3>MERN APPLICATION </h3>
       <nav>
         <ul style={{ listStyle: "none" }}>
           <li>
-            <Link to="/register" style={{ textDecoration: "none" }}>
-              SignUp
-            </Link>
+            <Link to="/register">SignUp</Link>
           </li>
           <li>
-            <Link to="/login" style={{ textDecoration: "none" }}>
-              SignIn
-            </Link>
+            <Link to="/login">SignIn</Link>
           </li>
         </ul>
       </nav>
@@ -35,13 +32,15 @@ const Home: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/register" element={<SignUp />} />
-        <Route path="/login" element={<SignIn />} />
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </Router>
+    <>
+      <Router>
+        <Routes>
+          <Route path="/register" element={<SignUp />} />
+          <Route path="/login" element={<SignIn />} />
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </Router>
+    </>
   );
 };
 

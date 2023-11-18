@@ -252,7 +252,11 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 //
 import { useDispatch } from "react-redux";
-import { registerUserRequest } from "../../redux/auth/slice";
+import {
+  registerUserRequest,
+  registerUserSuccess,
+} from "../../redux/auth/slice";
+import React from "react";
 //
 
 function Copyright(props) {
