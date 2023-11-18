@@ -1,0 +1,11 @@
+// Register actions
+export const SIGNEDUP = "SIGNEDUP";
+export const USER_REGISTER_REQUEST = "REGISTER_USER_REQUEST";
+export const USER_REGISTER_FAILURE = "REGISTER_USER_FAILURE";
+export const USER_REGISTER_SUCCESS = "REGISTER_USER_SUCCESS";
+
+// login actions
+export const USER_LOGIN_REQUEST = "LOGIN_REQUEST";
+export const USER_LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const USER_LOGIN_FAILURE = "LOGIN_FAILURE";
+export const USER_LOGOUT = "LOGOUT";

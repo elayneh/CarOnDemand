@@ -4,9 +4,13 @@ import mongoose, { ConnectOptions, Mongoose } from "mongoose";
 export const connectToDatabase = async (): Promise<Mongoose> => {
   try {
     // Connect to MongoDB
-    const dbURI: string =
-      // process.env.MONGO_URI ||
-      "mongodb://localhost:27017/MernBoilerPlateDatabase";
+    const dbURI: string = "mongodb://localhost:27017/MernBoilerPlateDatabase";
+    // process.env.MONGO_URI ||
+    // "" ||
+    // "mongodb+srv://MernBoilerPlate:MernBoilerPlatePassword@cluster0.wko3ywv.mongodb.net/MernBoilerPlateDatabase?retryWrites=true&w=majority";
+    if (!dbURI) {
+      throw new Error("MONGO_URI environment variable is not set");
+    }
     const options: any = {
       useNewUrlParser: true,
       useUnifiedTopology: true,

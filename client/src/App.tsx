@@ -1,25 +1,48 @@
-import { useState } from "react";
-import "./App.css";
+import React from "react";
+import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
+import SignUp from "./components/Common/Register";
+import SignIn from "./components/Common/Login";
+import Footer from "./components/Common/Footer";
+import NavBar from "./components/Common/Nav";
 
-function App() {
-  const [count, setCount] = useState(0);
-
+const Home: React.FC = () => {
   return (
-    <>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+    <div className="body-container">
+      <div className="nav-bar">
+        <NavBar/>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+      <h3>MERN APPLICATION </h3>
+      <nav>
+        <ul style={{ listStyle: "none" }}>
+          <li>
+            <Link to="/register" style={{ textDecoration: "none" }}>
+              SignUp
+            </Link>
+          </li>
+          <li>
+            <Link to="/login" style={{ textDecoration: "none" }}>
+              SignIn
+            </Link>
+          </li>
+        </ul>
+      </nav>
+      <div className="footer">
+        <Footer />
+      </div>
+    </div>
   );
-}
+};
+
+const App: React.FC = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/register" element={<SignUp />} />
+        <Route path="/login" element={<SignIn />} />
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </Router>
+  );
+};
 
 export default App;

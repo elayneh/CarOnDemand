@@ -8,18 +8,15 @@ const userTypeDefs = fs.readFileSync(
   path.join(__dirname, "/schemas/userTypeDefs.graphql"),
   "utf-8"
 );
-const postTypeDefs = fs.readFileSync(
-  path.join(__dirname, "/schemas/postTypeDefs.graphql"),
-  "utf-8"
-);
-const rootTypeDefs = fs.readFileSync(
-  path.join(__dirname, "/schemas/rootTypeDefs.graphql"),
-  "utf-8"
-);
+
+// const rootTypeDefs = fs.readFileSync(
+//   path.join(__dirname, "/schemas/rootTypeDefs.graphql"),
+//   "utf-8"
+// );
 const userResolvers = require("./resolvers/userResolvers");
 
 // Merge type definitions
-const mergedTypeDefs = mergeTypeDefs([postTypeDefs, rootTypeDefs]);
+const mergedTypeDefs = mergeTypeDefs([userTypeDefs]);
 
 // Merge resolvers
 const mergedResolvers = mergeResolvers([userResolvers]);

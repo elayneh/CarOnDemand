@@ -1,10 +1,13 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction } from "express";
+const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
+app.use(cors());
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
+app.get("/", (req: Request, res: Response, next: NextFunction) => {
   try {
-    res.send('Success');
+    res.send("Success");
   } catch (err) {
     next(err); // Pass the error to the error handling middleware
   }
@@ -14,9 +17,9 @@ app.get('/', (req: Request, res: Response, next: NextFunction) => {
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   // Handle the error, for instance, log it
   console.error(err);
-  res.status(500).send('Internal Server Error');
+  res.status(500).send("Internal Server Error");
 });
 
 app.listen(3000, () => {
-  console.log('Server running on port 3000');
+  console.log("Server running on port 3000");
 });
