@@ -8,16 +8,20 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
+// import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/DeveloperMode";
 
 const pages = ["Home", "Products", "Blog", "About US"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = ["Register", "Login"];
 
 export default function NavBar() {
+  const handleNavigate = (path: string) => {
+    window.location.assign(`/user/${path}`);
+    handleCloseUserMenu();
+  };
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -133,7 +137,7 @@ export default function NavBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="User profile">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -153,7 +157,7 @@ export default function NavBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={() => handleNavigate(setting)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}

@@ -3,7 +3,9 @@ import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
 import SignUp from "./components/Common/Register";
 import SignIn from "./components/Common/Login";
 import Footer from "./components/Common/Footer";
-import NavBar from "./components/Common/Nav";
+import NavBar from "./components/Common/NavBar";
+import Dashboard from "./components/Common/DashboardNav";
+
 
 const Home: React.FC = () => {
   return (
@@ -13,16 +15,6 @@ const Home: React.FC = () => {
         <NavBar />
       </div>
       <h3>MERN APPLICATION </h3>
-      <nav>
-        <ul style={{ listStyle: "none" }}>
-          <li>
-            <Link to="/register">SignUp</Link>
-          </li>
-          <li>
-            <Link to="/login">SignIn</Link>
-          </li>
-        </ul>
-      </nav>
       <div className="footer">
         <Footer />
       </div>
@@ -35,9 +27,10 @@ const App: React.FC = () => {
     <>
       <Router>
         <Routes>
-          <Route path="/register" element={<SignUp />} />
-          <Route path="/login" element={<SignIn />} />
+          <Route path="/user/register" element={<SignUp />} />
+          <Route path="/user/login" element={<SignIn />} />
           <Route path="/" element={<Home />} />
+          <Route path="/user/dashboard" element={<Dashboard />} />
         </Routes>
       </Router>
     </>
