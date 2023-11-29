@@ -8,18 +8,19 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
-// import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/DeveloperMode";
+import { useNavigate } from "react-router-dom";
 
 const pages = ["Home", "Products", "Blog", "About US"];
 const settings = ["Register", "Login"];
 
 export default function NavBar() {
+  const navigate = useNavigate();
   const handleNavigate = (path: string) => {
-    window.location.assign(`/user/${path}`);
+    navigate(`/user/${path}`);
     handleCloseUserMenu();
   };
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(

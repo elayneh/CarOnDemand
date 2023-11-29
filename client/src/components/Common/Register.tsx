@@ -46,7 +46,7 @@ export default function SignUp() {
   const handleSignup = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     await dispatch(
-      registerUserRequest({ firstName, lastName, email, password })
+      registerUserRequest({ firstName, lastName, email, password, token: "" })
     );
   };
 

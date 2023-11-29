@@ -5,11 +5,13 @@ interface User {
   lastName: string;
   email: string;
   password: string;
+  token: string | null;
 }
 
 interface LoginCredential {
   email: string;
   password: string;
+  token: string | null;
 }
 interface UserState {
   user: User | null;
@@ -37,6 +39,7 @@ const userSlice = createSlice({
     },
     registerUserSuccess: (state, action: PayloadAction<User>) => {
       state.loading = false;
+      state.isLoggedIn = true;
       state.user = action.payload;
     },
     registerUserFailure: (state, action: PayloadAction<string>) => {
@@ -49,9 +52,25 @@ const userSlice = createSlice({
     },
     loginUserSuccess: (state, action: PayloadAction<LoginCredential>) => {
       state.loading = false;
+      state.isLoggedIn = true;
       state.loginCredential = action.payload;
     },
     loginUserFailure: (state, action: PayloadAction<string>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+    userLogoutRequest: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    userLogoutSuccess: (state) => {
+      state.loading = true;
+      state.error = null;
+      state.isLoggedIn = false;
+      state.loginCredential = null;
+      state.user = null;
+    },
+    userLogoutFailure: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
       state.loading = false;
     },
@@ -65,6 +84,9 @@ export const {
   loginUserFailure,
   loginUserRequest,
   loginUserSuccess,
+  userLogoutFailure,
+  userLogoutRequest,
+  userLogoutSuccess,
 } = userSlice.actions;
 
 export default userSlice.reducer;

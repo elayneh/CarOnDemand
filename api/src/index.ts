@@ -5,6 +5,7 @@ const app = express();
 import cors from "cors";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
+const cookieParser = require("cookie-parser");
 const router = require("./routes/userRoutes");
 dotenv.config();
 const port = process.env.PORT || 5000;
@@ -13,7 +14,9 @@ app.use(
     origin: "*",
   })
 );
+
 app.use(express.json());
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(router);
 

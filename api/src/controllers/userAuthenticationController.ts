@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
 import validator from "validator";
-// const router = express.Router();
+const cookieParser = require("cookie-parser");
 
 module.exports = {
   register: async (req: Request, res: Response) => {
@@ -46,22 +46,27 @@ module.exports = {
           // Generate a JWT token for authentication
           const token = jwt.sign(
             { userId: newUser._id },
-            process.env.SECRET_KEY || "",
+            process.env.JWT_SECRET_KEY || "defaultKey",
             {
-              expiresIn: "1h",
+              expiresIn: "3h",
             }
           );
-          res.status(201).json({
-            userId: newUser._id,
-            token,
-            userData: {
-              firstName,
-              lastName,
-              email,
-              password,
-              _id,
-            },
-          });
+          // Cookie section
+          const options = {
+            expires: new Date(Date.now() + 3 * 60 * 60 * 60),
+            httpOnly: true,
+          };
+          res
+            .status(201)
+            .cookie("token", token, options)
+            .json({
+              userData: {
+                firstName,
+                lastName,
+                email,
+                password: undefined,
+              },
+            });
         } else {
           res.status(400).json({ message: "Invalid user data" });
           console.error("Invalid user data");
@@ -78,15 +83,13 @@ module.exports = {
   ): Promise<void> => {
     try {
       const { email, password } = req.body;
-      if (!email || !password) {
+      if (!(email && password)) {
         res.status(400).json({ message: "Email or password is not correct" });
         console.error("Email or password is not correct");
       } else {
         const foundUser = await User.findOne({ email });
         if (!foundUser) {
-          res
-            .status(401)
-            .json({ message: "Email or password is not correct" });
+          res.status(401).json({ message: "Email or password is not correct" });
           console.error("Email or password is not correct");
         } else {
           const isPasswordCorrect = bcrypt.compare(
@@ -94,26 +97,33 @@ module.exports = {
             foundUser.password,
             (err, result) => {
               if (err) {
-                console.error(err);
+                console.error("Email or password is not correct");
                 res
                   .status(401)
                   .json({ message: "Email or password is not correct" });
               } else if (result) {
                 const token = jwt.sign(
                   { userId: foundUser._id },
-                  process.env.SECRET_KEY || "",
+                  process.env.JWT_SECRET_KEY || "defaultKey",
                   {
-                    expiresIn: "1h",
+                    expiresIn: "3h",
                   }
                 );
-                res.status(201).json({
-                  userId: foundUser._id,
-                  token,
-                  loginCredential: {
-                    email,
-                    password,
-                  },
-                });
+                // Cookie section
+                const options = {
+                  expires: new Date(Date.now() + 3 * 60 * 60 * 60),
+                  httpOnly: true,
+                };
+                res
+                  .status(200)
+                  .cookie("token", token, options)
+                  .json({
+                    loginCredential: {
+                      email,
+                      password: undefined,
+                      token,
+                    },
+                  });
               } else {
                 res
                   .status(401)
@@ -126,5 +136,19 @@ module.exports = {
     } catch (err) {
       console.log("Authentication failed");
     }
+  },
+  logout: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    const options = {
+      expires: new Date(Date.now() + 10000),
+      httpOnly: true,
+    };
+    res.status(200).cookie("token", "expiredToken", options).json({
+      success: true,
+      message: "Logout successfully!",
+    });
   },
 };
