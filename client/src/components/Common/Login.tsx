@@ -14,10 +14,11 @@ import Container from "@mui/material/Container";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { ChangeEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import React from "react";
 
 const theme = createTheme();
 
-export default function SignIn() {
+function SignIn() {
   const { loginCredential } = useSelector(
     (state: RootState) => state.userAuthentication
   );
@@ -29,9 +30,7 @@ export default function SignIn() {
   const [password, setPassword] = useState(
     loginCredential ? loginCredential.password : ""
   );
-  const [token, setToken] = useState(
-    loginCredential ? loginCredential.token : ""
-  );
+
   const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
   };
@@ -41,20 +40,18 @@ export default function SignIn() {
 
   const handleLogin = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    await dispatch(loginUserRequest({ email, password, token }));
+    await dispatch(loginUserRequest({ email, password }));
   };
-  if (loginCredential?.token) {
-    navigate("/user/dashboard");
-  }
   return (
     <ThemeProvider theme={theme}>
       <div
         style={{
-          backgroundImage: "url(https://source.unsplash.com/random?cars)",
+          backgroundImage: "url(./../../assets/images/avatar/bgImage.jpeg)",
           backgroundRepeat: "no-repeat",
           backgroundColor: "gray",
           backgroundSize: "cover",
           backgroundPosition: "center",
+          backgroundAttachment: "fixed",
           height: "100vh",
           display: "flex",
           alignItems: "center",
@@ -149,3 +146,5 @@ export default function SignIn() {
     </ThemeProvider>
   );
 }
+
+export default SignIn;

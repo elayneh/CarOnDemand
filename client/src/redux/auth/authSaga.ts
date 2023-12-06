@@ -10,9 +10,11 @@ import {
   userLogoutRequest,
   userLogoutSuccess,
 } from "./userSlice";
+import navigationUtils from "../../constant/navigation";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+
 interface User {
   firstname: string;
   lastname: string;
@@ -25,12 +27,13 @@ interface LoginCredential {
 }
 
 // API calls start from here
-function registerUserRequestAPI(user: User) {
-  return axios.post("http://localhost:5000/user/register", user);
-}
+const registerUserRequestAPI = async (user: User) => {
+  return await axios.post("http://localhost:5000/user/register", user);
+};
 function loginUserRequestAPI(loginCredential: LoginCredential) {
   return axios.post("http://localhost:5000/user/login", loginCredential);
 }
+
 // End of API Call
 
 function* registerUser(
@@ -38,21 +41,23 @@ function* registerUser(
 ): Generator<any, void, unknown> {
   try {
     const response: any = yield call(registerUserRequestAPI, action.payload);
+    localStorage.setItem("token", response.data.userData.token);
     yield put(registerUserSuccess(response.data.userData));
-    window.location.assign("/user/dashboard");
   } catch (err: any) {
     toast.error(err.response.data.message);
     yield put(registerUserFailure(err.response.data.message));
   }
 }
+1;
 
 function* loginUser(
   action: PayloadAction<LoginCredential>
 ): Generator<any, void, unknown> {
   try {
     const response: any = yield call(loginUserRequestAPI, action.payload);
-    // window.location.assign("/user/dashboard");
+    localStorage.setItem("token", response.data.loginCredential.token);
     yield put(loginUserSuccess(response.data.loginCredential));
+    window.location.assign("/user/dashboard");
   } catch (err: any) {
     toast.error(err.response.data.message);
     yield put(loginUserFailure(err.response.data.message));
@@ -61,15 +66,12 @@ function* loginUser(
 
 function* logoutUser(): Generator<any, void, unknown> {
   try {
-    yield call(userLogoutRequest);
-    // console.log("DOCUMENT.COOKIE", document.cookie);
-    // document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    // const navigate = useNavigate();
-    // navigate("/");
+    localStorage.removeItem("token");
+    window.location.assign("/");
     yield put(userLogoutSuccess);
   } catch (err: any) {
-    toast.error(err.response.data.message);
-    yield put(loginUserFailure(err.response.data.message));
+    toast.error("Logout error");
+    yield put(loginUserFailure("Logout error"));
   }
 }
 

@@ -5,10 +5,20 @@ interface User {
   lastName: string;
   email: string;
   password: string;
-  token: string | null;
 }
 
 interface LoginCredential {
+  email: string;
+  password: string;
+}
+interface LoggedinCredential {
+  email: string;
+  password: string;
+  token: string;
+}
+interface UserCredential {
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   token: string | null;
@@ -37,7 +47,7 @@ const userSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    registerUserSuccess: (state, action: PayloadAction<User>) => {
+    registerUserSuccess: (state, action: PayloadAction<UserCredential>) => {
       state.loading = false;
       state.isLoggedIn = true;
       state.user = action.payload;
@@ -50,7 +60,7 @@ const userSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    loginUserSuccess: (state, action: PayloadAction<LoginCredential>) => {
+    loginUserSuccess: (state, action: PayloadAction<LoggedinCredential>) => {
       state.loading = false;
       state.isLoggedIn = true;
       state.loginCredential = action.payload;
@@ -64,7 +74,7 @@ const userSlice = createSlice({
       state.error = null;
     },
     userLogoutSuccess: (state) => {
-      state.loading = true;
+      state.loading = false;
       state.error = null;
       state.isLoggedIn = false;
       state.loginCredential = null;

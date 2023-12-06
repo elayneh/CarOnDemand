@@ -20,6 +20,7 @@ const settings = ["Register", "Login"];
 export default function NavBar() {
   const navigate = useNavigate();
   const handleNavigate = (path: string) => {
+    path = path.toLowerCase();
     navigate(`/user/${path}`);
     handleCloseUserMenu();
   };

@@ -24,7 +24,6 @@ export default function Dashboard() {
   const handleNavigate = (path: string) => {
     path = path.toLowerCase();
     if (path === "logout") {
-      console.log(document)
       dispatch(userLogoutRequest);
     } else {
       navigate(`/user/${path}`);

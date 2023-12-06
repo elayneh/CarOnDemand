@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SignUp from "./components/Common/Register";
 import SignIn from "./components/Common/Login";
-import Footer from "./components/Common/Footer";
+import { Footer } from "./components/Common/Footer";
 import NavBar from "./components/Common/NavBar";
 import Dashboard from "./components/Common/DashboardNav";
 import { useSelector } from "react-redux";

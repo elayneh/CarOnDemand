@@ -1,9 +1,9 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useEffect, useState } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-// import FormControlLabel from "@mui/material/FormControlLabel";
-// import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -11,55 +11,95 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import EmailIcon from "@mui/icons-material/Email";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
+
 //
 import { useDispatch, useSelector } from "react-redux";
 import { registerUserRequest } from "../../redux/auth/userSlice";
 import { RootState } from "../../redux/store";
+import { IconButton } from "@mui/material";
+import { navigationUtils } from "../../../utils/utils";
+import { useNavigate } from "react-router-dom";
 
 const theme = createTheme();
 
-export default function SignUp() {
-  const { user, loading, error } = useSelector(
+interface User {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+function SignUp() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      firstName: Yup.string()
+        .max(32, "Must be 32 character or less")
+        .required("Required"),
+      lastName: Yup.string()
+        .max(32, "Must 32 characters or less")
+        .required("Required"),
+      email: Yup.string().email("Invalid email address").required("Required"),
+      password: Yup.string()
+        .max(16, "Must be 16 characters or less")
+        .min(8, "Must be 8 characters or more")
+        .matches(
+          passwordRegex,
+          "Should include lowercase and uppercase letter, special characters, and numbers"
+        )
+        .required("Required"),
+    }),
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        if (Object.keys(formik.errors).length === 0) {
+          await dispatch(registerUserRequest(values));
+          if (localStorage.getItem("token")) {
+            console.log("TOKEN: ", localStorage.getItem("token"));
+            navigate("/user/dashboard");
+          }
+        }
+      } catch (error) {
+        console.error("Error during user registration:", error);
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
+
+  const { loading, error } = useSelector(
     (state: RootState) => state.userAuthentication
   );
-
-  const dispatch = useDispatch();
-  const [firstName, setFirstName] = useState(user ? user.firstName : "");
-  const [lastName, setLastName] = useState(user ? user.lastName : "");
-  const [email, setEmail] = useState(user ? user.email : "");
-  const [password, setPassword] = useState(user ? user.password : "");
-  const handleFirstnameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setFirstName(event.target.value);
-  };
-  const handleLastnameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setLastName(event.target.value);
-  };
-
-  const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
-
-  const handleSignup = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    await dispatch(
-      registerUserRequest({ firstName, lastName, email, password, token: "" })
-    );
-  };
 
   return (
     <ThemeProvider theme={theme}>
       <div
         style={{
-          backgroundImage: "url(https://source.unsplash.com/random?cars)",
+          backgroundImage:
+            "url(./../../assets/images/avatar/bgImage.jpeg)",
           backgroundRepeat: "no-repeat",
           backgroundColor: "gray",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: "100vh",
+          backgroundAttachment: "fixed",
+          height: "100%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -89,68 +129,164 @@ export default function SignUp() {
             {loading && (
               <h4 style={{ color: "#1976d2" }}>Registration loading...</h4>
             )}
-            <Box component="form" noValidate sx={{ mt: 3 }}>
+
+            {/* <form onSubmit={formik.handleSubmit}> */}
+            <Box component="form" sx={{ mt: 3 }} onSubmit={formik.handleSubmit}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <TextField
                     autoComplete="given-name"
-                    name="firstName"
                     required
                     fullWidth
                     id="firstName"
                     label="First Name"
-                    autoFocus
-                    value={firstName}
-                    onChange={handleFirstnameChange}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <AccountCircle />
+                        </InputAdornment>
+                      ),
+                    }}
+                    {...formik.getFieldProps("firstName")}
+                    error={
+                      formik.touched.firstName &&
+                      Boolean(formik.errors.firstName)
+                    }
+                    sx={{
+                      ...(formik.touched.firstName && formik.errors.firstName
+                        ? { borderColor: "red" }
+                        : { borderColor: "green" }),
+                    }}
                   />
+                  {formik.touched.firstName && formik.errors.firstName ? (
+                    <div style={{ color: "red" }}>
+                      {formik.errors.firstName}
+                    </div>
+                  ) : null}
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
-                    required
                     fullWidth
                     id="lastName"
                     label="Last Name"
-                    name="lastName"
                     autoComplete="family-name"
-                    value={lastName}
-                    onChange={handleLastnameChange}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <AccountCircle />
+                        </InputAdornment>
+                      ),
+                    }}
+                    {...formik.getFieldProps("lastName")}
+                    error={
+                      formik.touched.lastName && Boolean(formik.errors.lastName)
+                    }
+                    sx={{
+                      ...(formik.touched.lastName && formik.errors.lastName
+                        ? { borderColor: "red" }
+                        : { borderColor: "green" }),
+                    }}
                   />
+                  {formik.touched.lastName && formik.errors.lastName ? (
+                    <div style={{ color: "red" }}>{formik.errors.lastName}</div>
+                  ) : null}
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
-                    required
                     fullWidth
                     id="email"
                     label="Email Address"
-                    name="email"
                     autoComplete="email"
-                    value={email}
-                    onChange={handleEmailChange}
+                    variant="outlined"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <EmailIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                    {...formik.getFieldProps("email")}
+                    error={formik.touched.email && Boolean(formik.errors.email)}
+                    sx={{
+                      ...(formik.touched.email && formik.errors.email
+                        ? { borderColor: "red" }
+                        : { borderColor: "green" }),
+                    }}
                   />
+                  {formik.touched.email && formik.errors.email ? (
+                    <div style={{ color: "red" }}>{formik.errors.email}</div>
+                  ) : null}
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
                     required
                     fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
                     id="password"
+                    label="Password"
+                    type={showPassword ? "text" : "password"}
+                    variant="outlined"
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowPassword(!showPassword)}
+                            onMouseDown={(e) => e.preventDefault()}
+                          >
+                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                     autoComplete="new-password"
-                    value={password}
-                    onChange={handlePasswordChange}
+                    {...formik.getFieldProps("password")}
+                    error={
+                      formik.touched.password && Boolean(formik.errors.password)
+                    }
+                    sx={{
+                      ...(formik.touched.password && formik.errors.password
+                        ? { borderColor: "red" }
+                        : { borderColor: "green" }),
+                    }}
                   />
+                  {formik.touched.password && formik.errors.password ? (
+                    <div style={{ color: "red" }}>{formik.errors.password}</div>
+                  ) : null}
                 </Grid>
               </Grid>
-              <Button
-                onClick={handleSignup}
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginTop: 3,
+                  marginBottom: 2,
+                }}
               >
-                Sign Up
-              </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{ flex: 1, marginRight: 1 }}
+                  disabled={
+                    Object.keys(formik.touched).length === 0 ||
+                    Object.keys(formik.errors).length > 0
+                  }
+                >
+                  SignUp
+                </Button>
+                <Button
+                  type="reset"
+                  onClick={() => formik.resetForm()}
+                  sx={{
+                    flex: 1,
+                    color: "white",
+                    background: "#FF9F61",
+                    "&:hover": {
+                      background: "#FF6961",
+                    },
+                  }}
+                >
+                  Reset
+                </Button>
+              </Box>
               <Grid container justifyContent="flex-end">
                 <Grid item>
                   <p>
@@ -166,9 +302,11 @@ export default function SignUp() {
                 </Grid>
               </Grid>
             </Box>
+            {/* </form> */}
           </Box>
         </Container>
       </div>
     </ThemeProvider>
   );
 }
+export default SignUp;

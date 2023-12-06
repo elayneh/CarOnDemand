@@ -4,8 +4,10 @@ import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import { Facebook, Instagram, Twitter } from "@mui/icons-material";
 import { Box } from "@mui/material";
-import './../../assets/styles/footer.css'
-export default function Footer() {
+import "./../../assets/styles/footer.css";
+import React from "react";
+
+export const Footer: React.FC = () => {
   return (
     <Box
       component="footer"
@@ -74,4 +76,4 @@ export default function Footer() {
       </Container>
     </Box>
   );
-}
+};

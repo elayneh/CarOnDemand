@@ -27,7 +27,7 @@ export const NotFound = () => {
           </Grid>
           <Grid xs={6}>
             <img
-              src="./../../../public/assets/images/notFound.jpg"
+              src="./../../../assets/images/notFound.jpg"
               alt=""
               width={200}
               height={100}
