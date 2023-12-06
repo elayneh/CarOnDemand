@@ -45,28 +45,38 @@ module.exports = {
 
           // Generate a JWT token for authentication
           const token = jwt.sign(
-            { userId: newUser._id },
+            { userId: newUser.email },
             process.env.JWT_SECRET_KEY || "defaultKey",
             {
-              expiresIn: "3h",
+              expiresIn: "1d",
             }
           );
+          res.status(201).json({
+            userData: {
+              firstName,
+              lastName,
+              email,
+              password,
+              token,
+            },
+          });
           // Cookie section
-          const options = {
-            expires: new Date(Date.now() + 3 * 60 * 60 * 60),
-            httpOnly: true,
-          };
-          res
-            .status(201)
-            .cookie("token", token, options)
-            .json({
-              userData: {
-                firstName,
-                lastName,
-                email,
-                password: undefined,
-              },
-            });
+          // const options = {
+          //   expires: new Date(Date.now() + 3 * 60 * 60 * 60),
+          //   httpOnly: true,
+          // };
+          // res
+          //   .status(201)
+          //   .cookie("token", token, options)
+          //   .json({
+          //     userData: {
+          //       firstName,
+          //       lastName,
+          //       email,
+          //       password: undefined,
+          //       token
+          //     },
+          //   });
         } else {
           res.status(400).json({ message: "Invalid user data" });
           console.error("Invalid user data");
@@ -84,7 +94,9 @@ module.exports = {
     try {
       const { email, password } = req.body;
       if (!(email && password)) {
-        res.status(400).json({ message: "Email or password is not correct" });
+        res
+          .status(400)
+          .json({ message: "REDietEmail or password is not correct" });
         console.error("Email or password is not correct");
       } else {
         const foundUser = await User.findOne({ email });
@@ -116,7 +128,7 @@ module.exports = {
                 };
                 res
                   .status(200)
-                  .cookie("token", token, options)
+                  // .cookie("token", token, options)
                   .json({
                     loginCredential: {
                       email,
