@@ -21,10 +21,11 @@ const settings = ["Profile", "Account", "Dashboard", "Logout"];
 export default function Dashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const handleNavigate = (path: string) => {
+  const handleNavigate = async (path: string) => {
     path = path.toLowerCase();
     if (path === "logout") {
-      dispatch(userLogoutRequest);
+      localStorage.removeItem("carondemandToken");
+      navigate("/");
     } else {
       navigate(`/user/${path}`);
     }
@@ -146,7 +147,10 @@ export default function Dashboard() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="User profile">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="User Avatar" />
+                <Avatar
+                  alt="User Avatar"
+                  src="/src/static/images/avatar/profile.avif"
+                />
               </IconButton>
             </Tooltip>
             <Menu

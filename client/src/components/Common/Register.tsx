@@ -40,8 +40,16 @@ function SignUp() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
+  const user = useSelector((state: RootState) => state.userAuthentication.user);
+
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  useEffect(() => {
+    if (user && localStorage.getItem("carondemandToken")) {
+      navigate("/user/dashboard");
+    }
+  }, [user, localStorage.getItem("carondemandToken")]);
 
   const formik = useFormik({
     initialValues: {
@@ -67,14 +75,10 @@ function SignUp() {
         )
         .required("Required"),
     }),
-    onSubmit: async (values, { setSubmitting }) => {
+    onSubmit: (values, { setSubmitting }) => {
       try {
         if (Object.keys(formik.errors).length === 0) {
-          await dispatch(registerUserRequest(values));
-          if (localStorage.getItem("token")) {
-            console.log("TOKEN: ", localStorage.getItem("token"));
-            navigate("/user/dashboard");
-          }
+          dispatch(registerUserRequest(values));
         }
       } catch (error) {
         console.error("Error during user registration:", error);
@@ -83,17 +87,11 @@ function SignUp() {
       }
     },
   });
-
-  const { loading, error } = useSelector(
-    (state: RootState) => state.userAuthentication
-  );
-
   return (
     <ThemeProvider theme={theme}>
       <div
         style={{
-          backgroundImage:
-            "url(./../../assets/images/avatar/bgImage.jpeg)",
+          backgroundImage: "url(./../../assets/images/avatar/bgImage.jpeg)",
           backgroundRepeat: "no-repeat",
           backgroundColor: "gray",
           backgroundSize: "cover",
@@ -126,9 +124,9 @@ function SignUp() {
             <Typography component="h1" variant="h5">
               Sign up
             </Typography>
-            {loading && (
+            {/* {loading && (
               <h4 style={{ color: "#1976d2" }}>Registration loading...</h4>
-            )}
+            )} */}
 
             {/* <form onSubmit={formik.handleSubmit}> */}
             <Box component="form" sx={{ mt: 3 }} onSubmit={formik.handleSubmit}>

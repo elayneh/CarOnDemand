@@ -48,7 +48,7 @@ module.exports = {
             { userId: newUser.email },
             process.env.JWT_SECRET_KEY || "defaultKey",
             {
-              expiresIn: "1d",
+              expiresIn: "3h",
             }
           );
           res.status(201).json({
@@ -60,23 +60,6 @@ module.exports = {
               token,
             },
           });
-          // Cookie section
-          // const options = {
-          //   expires: new Date(Date.now() + 3 * 60 * 60 * 60),
-          //   httpOnly: true,
-          // };
-          // res
-          //   .status(201)
-          //   .cookie("token", token, options)
-          //   .json({
-          //     userData: {
-          //       firstName,
-          //       lastName,
-          //       email,
-          //       password: undefined,
-          //       token
-          //     },
-          //   });
         } else {
           res.status(400).json({ message: "Invalid user data" });
           console.error("Invalid user data");
@@ -130,7 +113,7 @@ module.exports = {
                   .status(200)
                   // .cookie("token", token, options)
                   .json({
-                    loginCredential: {
+                    loggedinCredential: {
                       email,
                       password: undefined,
                       token,
@@ -148,19 +131,5 @@ module.exports = {
     } catch (err) {
       console.log("Authentication failed");
     }
-  },
-  logout: async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
-    const options = {
-      expires: new Date(Date.now() + 10000),
-      httpOnly: true,
-    };
-    res.status(200).cookie("token", "expiredToken", options).json({
-      success: true,
-      message: "Logout successfully!",
-    });
   },
 };

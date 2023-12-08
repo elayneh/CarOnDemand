@@ -29,6 +29,7 @@ interface UserState {
   error: string | null;
   isLoggedIn: boolean;
   loginCredential: LoginCredential | null;
+  loggedinCredential: LoggedinCredential | null;
 }
 
 const initialState: UserState = {
@@ -37,6 +38,7 @@ const initialState: UserState = {
   error: null,
   isLoggedIn: false,
   loginCredential: null,
+  loggedinCredential: null,
 };
 
 const userSlice = createSlice({
@@ -63,7 +65,7 @@ const userSlice = createSlice({
     loginUserSuccess: (state, action: PayloadAction<LoggedinCredential>) => {
       state.loading = false;
       state.isLoggedIn = true;
-      state.loginCredential = action.payload;
+      state.loggedinCredential = action.payload;
     },
     loginUserFailure: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
