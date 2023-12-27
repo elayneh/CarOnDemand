@@ -1,7 +1,0 @@
-overwrite: true
-schema: './graphql/schemas/userTypeDefs.graphql'
-generates: ./graphql/schemas/generated/userTypeDefs.ts:
-plugins:
-      - typescript
-      - typescript-operations
-      - typescript-resolvers
