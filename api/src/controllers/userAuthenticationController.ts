@@ -56,7 +56,7 @@ module.exports = {
               firstName,
               lastName,
               email,
-              password,
+              password: undefined,
               token,
             },
           });
@@ -77,9 +77,7 @@ module.exports = {
     try {
       const { email, password } = req.body;
       if (!(email && password)) {
-        res
-          .status(400)
-          .json({ message: "REDietEmail or password is not correct" });
+        res.status(400).json({ message: "Email or password is not correct" });
         console.error("Email or password is not correct");
       } else {
         const foundUser = await User.findOne({ email });
@@ -90,7 +88,7 @@ module.exports = {
           const isPasswordCorrect = bcrypt.compare(
             password,
             foundUser.password,
-            (err, result) => {
+            async (err, result) => {
               if (err) {
                 console.error("Email or password is not correct");
                 res
@@ -104,16 +102,18 @@ module.exports = {
                     expiresIn: "3h",
                   }
                 );
-                // Cookie section
-                const options = {
-                  expires: new Date(Date.now() + 3 * 60 * 60 * 60),
-                  httpOnly: true,
-                };
+                const { firstName, lastName, email, password } = foundUser;
+
+                const user = await User.findOne({ email }).select(
+                  "-password -_id -__v -role"
+                );
                 res
                   .status(200)
                   // .cookie("token", token, options)
                   .json({
-                    loggedinCredential: {
+                    userData: {
+                      firstName,
+                      lastName,
                       email,
                       password: undefined,
                       token,

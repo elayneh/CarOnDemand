@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
-
+import bcrypt from "bcrypt";
 import validator from "validator";
 
 interface IUser extends Document {
@@ -23,8 +23,27 @@ const userSchema = new Schema<IUser>({
     },
   },
   password: { type: String, required: true },
+  role: { type: String, default: "user" },
 });
 
 const User = mongoose.model<IUser>("User", userSchema);
+
+const initializeAdmin = async () => {
+  const adminExists = await User.exists({ role: { $regex: /^admin$/i } });
+  const password = "admin";
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  if (!adminExists) {
+    await User.create({
+      firstName: "Admin",
+      lastName: "Admin",
+      email: "admin@gmail.com",
+      password: hashedPassword,
+      role: "admin",
+    });
+  }
+};
+
+initializeAdmin();
 
 export default User;
