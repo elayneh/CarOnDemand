@@ -11,11 +11,6 @@ interface LoginCredential {
   email: string;
   password: string;
 }
-interface LoggedinCredential {
-  email: string;
-  password: string;
-  token: string;
-}
 interface UserCredential {
   firstName: string;
   lastName: string;
@@ -29,7 +24,6 @@ interface UserState {
   error: string | null;
   isLoggedIn: boolean;
   loginCredential: LoginCredential | null;
-  loggedinCredential: LoggedinCredential | null;
 }
 
 const initialState: UserState = {
@@ -38,7 +32,6 @@ const initialState: UserState = {
   error: null,
   isLoggedIn: false,
   loginCredential: null,
-  loggedinCredential: null,
 };
 
 const userSlice = createSlice({
@@ -62,15 +55,30 @@ const userSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    loginUserSuccess: (state, action: PayloadAction<LoggedinCredential>) => {
+    loginUserSuccess: (state, action: PayloadAction<UserCredential>) => {
       state.loading = false;
       state.isLoggedIn = true;
-      state.loggedinCredential = action.payload;
+      state.user = action.payload;
     },
     loginUserFailure: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
       state.loading = false;
     },
+    // User profile
+    userProfileRequest: (state) => {
+      state.error = null;
+      state.loading = true;
+    },
+    userProfileSuccess: (state, action: PayloadAction<UserCredential>) => {
+      state.user = action.payload;
+      state.loading = false;
+    },
+    userProfileFailure: (state, action: PayloadAction<string>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+
+    // User logout
     userLogoutRequest: (state) => {
       state.loading = true;
       state.error = null;
@@ -96,6 +104,9 @@ export const {
   loginUserFailure,
   loginUserRequest,
   loginUserSuccess,
+  userProfileFailure,
+  userProfileRequest,
+  userProfileSuccess,
   userLogoutFailure,
   userLogoutRequest,
   userLogoutSuccess,

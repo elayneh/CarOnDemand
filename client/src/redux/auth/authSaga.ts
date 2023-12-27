@@ -7,13 +7,11 @@ import {
   registerUserFailure,
   registerUserRequest,
   registerUserSuccess,
-  userLogoutRequest,
-  userLogoutSuccess,
+  userProfileFailure,
+  userProfileRequest,
 } from "./userSlice";
-import navigationUtils from "../../constant/navigation";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
 interface User {
   firstname: string;
@@ -34,6 +32,10 @@ function loginUserRequestAPI(loginCredential: LoginCredential) {
   return axios.post("http://localhost:5000/user/login", loginCredential);
 }
 
+const userProfileRequestAPI = async () => {
+  return axios.post("http://localhost:5000/user/profile");
+};
+
 // End of API Call
 
 function* registerUser(
@@ -43,7 +45,6 @@ function* registerUser(
     const response: any = yield call(registerUserRequestAPI, action.payload);
     localStorage.setItem("carondemandToken", response.data.userData.token);
     yield put(registerUserSuccess(response.data.userData));
-
   } catch (err: any) {
     toast.error(err.response.data.message);
     yield put(registerUserFailure(err.response.data.message));
@@ -54,14 +55,22 @@ function* loginUser(
 ): Generator<any, void, unknown> {
   try {
     const response: any = yield call(loginUserRequestAPI, action.payload);
-    localStorage.setItem(
-      "carondemandToken",
-      response.data.loggedinCredential.token
-    );
-    yield put(loginUserSuccess(response.data.loggedinCredential));
+    localStorage.setItem("carondemandToken", response.data.userData.token);
+    yield put(loginUserSuccess(response.data.userData));
   } catch (err: any) {
     toast.error(err.response.data.message);
     yield put(loginUserFailure(err.response.data.message));
+  }
+}
+
+// Profile
+function* userProfile(): Generator<any, void, unknown> {
+  try {
+    const response: any = yield call(userProfileRequestAPI);
+    localStorage.setItem("userInformation", response.data.UserCredential);
+  } catch (err) {
+    toast.error(err.response.data.message);
+    yield put(userProfileFailure(err.respomse.data.message));
   }
 }
 
@@ -71,7 +80,10 @@ function* registerWatcherSaga() {
 function* loginWatcherSaga() {
   yield takeLatest(loginUserRequest, loginUser);
 }
+function* profileWatcherSaga() {
+  yield takeLatest(userProfileRequest, userProfile);
+}
 
 export default function* rootSaga() {
-  yield all([loginWatcherSaga(), registerWatcherSaga()]);
+  yield all([loginWatcherSaga(), registerWatcherSaga(), profileWatcherSaga]);
 }

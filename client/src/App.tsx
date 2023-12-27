@@ -1,67 +1,71 @@
-import React, { useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import SignUp from "./components/Common/Register";
-import SignIn from "./components/Common/Login";
-import { Footer } from "./components/Common/Footer";
-import NavBar from "./components/Common/NavBar";
-import Dashboard from "./components/Common/DashboardNav";
+import React, { useEffect, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import SignUp from "./Components/Register";
+import SignIn from "./Components/Login";
+import { Footer } from "./Components/Footer";
+import NavBar from "./Components/LandingPage/NavBar";
+import Dashboard from "./Components/DashboardNav";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
-import { NotFound } from "./components/Common/NotFound";
+import { NotFound } from "./Components/NotFound";
 import jwt from "jsonwebtoken";
-import PrivateRoute from "./components/Common/ProtectedRoute";
+import PrivateRoute from "./Components/ProtectedRoute";
 import { JwtPayload, jwtDecode } from "jwt-decode";
-
-const Home: React.FC = () => {
-  return (
-    <div className="body-container">
-      <div className="nav-bar">
-        <NavBar />
-      </div>
-      <h3>MERN APPLICATION</h3>
-      <div className="footer">
-        <Footer />
-      </div>
-    </div>
-  );
-};
+import Profile from "./Components/Profile";
+import LandingPage from "./Components/LandingPage";
 
 const App: React.FC = () => {
-  let isValidToken: number | undefined | boolean = false;
+  const [isValidToken, setIsValidToken] = useState(false);
+  const token = localStorage.getItem("carondemandToken");
 
   useEffect(() => {
-    try {
-      const getToken = (): string | null => {
-        return localStorage.getItem("carondemandToken");
-      };
-
-      // Get the token from localStorage
-      const token = getToken();
-      if (token) {
-        const decodedToken: JwtPayload = jwtDecode(token);
-        const isTokenExpired = !(
-          decodedToken?.exp && Math.floor(Date.now() / 1000) < decodedToken.exp
-        );
-        isTokenExpired ? isValidToken : (isValidToken = true);
+    const checkTokenValidity = () => {
+      try {
+        if (token) {
+          const decodedToken = jwtDecode(token);
+          console.log("DECODED TOKEN", decodedToken);
+          const isTokenExpired =
+            decodedToken.exp && Date.now() / 1000 > decodedToken.exp;
+          if (isTokenExpired) {
+            localStorage.removeItem("carondemandToken");
+          }
+          setIsValidToken(!isTokenExpired);
+        } else {
+          setIsValidToken(false);
+        }
+      } catch (error) {
+        console.error("Error checking token validity:", error);
+        setIsValidToken(false);
       }
-    } catch (error) {
-      console.error("Error checking token validity:", error);
-    }
-    console.log("Token Status: ", isValidToken); // Move the logging inside useEffect
-  }, []);
-  console.log("Token Status: ", isValidToken); // Move the logging inside useEffect
+    };
 
+    checkTokenValidity();
+  }, [token]);
   return (
     <>
       <Router>
         <Routes>
-          {/* <Route path="/" element={isLoggedIn ? <Dashboard /> : <Home />} /> */}
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/user/register" element={<SignUp />} />
           <Route path="/user/login" element={<SignIn />} />
-          <Route path="/user/dashboard" element={<Dashboard />} />
-          {/* Use PrivateRoute for the protected route */}
-          {/* <PrivateRoute path="/user/dashboard" element={<Dashboard />} /> */}
+          <Route
+            path="/user/*"
+            element={
+              isValidToken ? (
+                <Routes>
+                  <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="profile" element={<Profile />} />
+                </Routes>
+              ) : (
+                <Navigate to="/user/login" replace />
+              )
+            }
+          />{" "}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
