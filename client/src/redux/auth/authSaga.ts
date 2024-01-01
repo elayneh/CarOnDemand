@@ -12,6 +12,10 @@ import {
 } from "./userSlice";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
+require("dotenv").config();
+
+const PORT = process.env.PORT ?? null;
+const BASE_URL = process.env.BASE_URL ?? "";
 
 interface User {
   firstname: string;
@@ -26,14 +30,14 @@ interface LoginCredential {
 
 // API calls start from here
 const registerUserRequestAPI = async (user: User) => {
-  return axios.post("http://localhost:5000/user/register", user);
+  return axios.post(`${BASE_URL}:${PORT}/user/register`, user);
 };
 function loginUserRequestAPI(loginCredential: LoginCredential) {
-  return axios.post("http://localhost:5000/user/login", loginCredential);
+  return axios.post(`${BASE_URL}:${PORT}/user/login`, loginCredential);
 }
 
 const userProfileRequestAPI = async () => {
-  return axios.post("http://localhost:5000/user/profile");
+  return axios.post(`${BASE_URL}:${PORT}/user/profile`);
 };
 
 // End of API Call

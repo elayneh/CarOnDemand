@@ -1,9 +1,0 @@
-react router version 6
--> If the path segment starts with `:` then it becomes a "ynamic segment"
--> there can be multiple dynamic segments in a single route path("elayneh/:year/:id")
--> Dynamic segments cannot be "partial"("elayneh-:id")
--> Can make a route segment optional by adding a `?` to the end of the segment("belayneh/:lang?/id => this matches multiple segments ending with id.
--> Catchall and star segments(/* matches /id, /name, /year/account/ ...)
--> Layout route's(Outlet)
--> index
--> caseSensitive
